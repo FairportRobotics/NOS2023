@@ -245,19 +245,23 @@ void loop() {
     if (programNumber == 1) {
       Serial.println("red steady 578 program");
       for (int i = 0; i < NUMPIXELS; i++) {
-        uint16_t pixel = pgm_read_dword(&(seven[i]));
-        frontPixels.setPixelColor(pixel, frontPixels.Color(0, 255, 0));
+        if (pgm_read_dword(&(seven[i])))
+        {
+            frontPixels.setPixelColor(i, frontPixels.Color(0, 255, 0));
+            backPixels.setPixelColor(i, backPixels.Color(0, 255, 0));    
+        }
         frontPixels.show();  // This sends the updated pixel color to the hardware.
-        backPixels.setPixelColor(pixel, backPixels.Color(0, 255, 0));
         backPixels.show();  // This sends the updated pixel color to the hardware.
       }
     } else if (programNumber == 3) {
       Serial.println("blue steady 578 program");
       for (int i = 0; i < NUMPIXELS; i++) {
-        uint16_t pixel = pgm_read_dword(&(seven[i]));
-        frontPixels.setPixelColor(pixel, frontPixels.Color(0, 0, 255));
+        if (pgm_read_dword(&(seven[i])))
+        {
+          frontPixels.setPixelColor(i,  frontPixels.Color(0, 0, 255));
+          backPixels.setPixelColor(i, backPixels.Color(0, 0, 255));
+      }
         frontPixels.show();  // This sends the updated pixel color to the hardware.
-        backPixels.setPixelColor(pixel, backPixels.Color(0, 0, 255));
         backPixels.show();  // This sends the updated pixel color to the hardware.
       }
     }
