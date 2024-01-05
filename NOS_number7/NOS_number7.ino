@@ -104,7 +104,7 @@ int progSWstate;
 int prevProgSWstate;  //Used to determine when the switch changed state
 
 int programNumber;  //The current program number being run on this stick
-const int maxPrograms = 4;
+const int maxPrograms = 2;
 
 const long seven[] PROGMEM = {
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -216,7 +216,7 @@ void loop() {
   //See if the Test LEDs button was pressed and released
   testSWstate = input[testModeSW].Accepted;
   if (testSWstate != prevSWstate && testSWstate == 0) {
-    //    Serial.println("Test Switch turned off");
+    Serial.println("Test Switch turned off");
     digitalWrite(intLED, HIGH);  //Turn on LED 13 for the duration of the test
     testLEDs(NUMPIXELS);
     digitalWrite(intLED, LOW);  //Turn off LED 13
@@ -228,8 +228,8 @@ void loop() {
   //See if the Program Change button was pressed and released
   progSWstate = input[progChangeSW].Accepted;
   if ((progSWstate != prevProgSWstate)) {
-    //               Serial.print("progSWstate = ");
-    //               Serial.println(progSWstate);
+    Serial.print("progSWstate = ");
+    Serial.println(progSWstate);
   }
 
   if ((progSWstate != prevProgSWstate) && (progSWstate == 0)) {
@@ -242,126 +242,120 @@ void loop() {
     bt_SND_5.print(programNumber);  // Send text over bluetooth
     bt_SND_8.print(programNumber);  // Send text over bluetooth
 
-    if (programNumber == 1) {
-      Serial.println("red steady 578 program");
-      for (int i = 0; i < NUMPIXELS; i++) {
-        if (pgm_read_dword(&(seven[i])))
+    if (programNumber == 1) 
+    {  // RED steady 578 program
+      for (int i = 0; i < NUMPIXELS; i++) 
+      {
+        if (pgm_read_dword(&(seven[i]))) 
         {
-            frontPixels.setPixelColor(i, frontPixels.Color(0, 255, 0));
-            backPixels.setPixelColor(i, backPixels.Color(0, 255, 0));    
+          frontPixels.setPixelColor(i, frontPixels.Color(0, 255, 0));
+          backPixels.setPixelColor(i, backPixels.Color(0, 255, 0));
         }
-        frontPixels.show();  // This sends the updated pixel color to the hardware.
-        backPixels.show();  // This sends the updated pixel color to the hardware.
       }
-    } else if (programNumber == 3) {
-      Serial.println("blue steady 578 program");
-      for (int i = 0; i < NUMPIXELS; i++) {
-        if (pgm_read_dword(&(seven[i])))
+      frontPixels.show();  // This sends the updated pixel color to the hardware.
+      backPixels.show();   // This sends the updated pixel color to the hardware.
+    }
+    else if (programNumber == 2) 
+    { // BLUE steady 578 program
+      for (int i = 0; i < NUMPIXELS; i++) 
+      {
+        if (pgm_read_dword(&(seven[i]))) 
         {
-          frontPixels.setPixelColor(i,  frontPixels.Color(0, 0, 255));
+          frontPixels.setPixelColor(i, frontPixels.Color(0, 0, 255));
           backPixels.setPixelColor(i, backPixels.Color(0, 0, 255));
+        }
       }
-        frontPixels.show();  // This sends the updated pixel color to the hardware.
-        backPixels.show();  // This sends the updated pixel color to the hardware.
-      }
-    }
-    prevProgSWstate = progSWstate;
-
-    if (programNumber == 2)
-    {
-      Serial.println("red flashing 578 program");
-    }
-    else if (programNumber == 4)
-    {
-      Serial.println("blue flashing 578 program");
+      frontPixels.show(); 
+      backPixels.show();  
     }
   }
+  prevProgSWstate = progSWstate;
 }
 
-  //==========================================================
-  void messgeToBt_SND_5() {
-    char c;
+//==========================================================
+void messgeToBt_SND_5() {
+  char c;
 
-    bt_SND_5.listen();
-    bt_SND_5.print(command);
-    Serial.print("Sent to Number 5: ");
-    //Do not print the last character of the string which is \n
-    Serial.println(command.substring(0, command.length() - 1));
+  bt_SND_5.listen();
+  bt_SND_5.print(command);
+  Serial.print("Sent to Number 5: ");
+  //Do not print the last character of the string which is \n
+  Serial.println(command.substring(0, command.length() - 1));
 
-    delay(50);  //Give the HT-05 a chance to respond
-    if (bt_SND_5.available()) {
-      delay(50);
-      while (bt_SND_5.available()) {
-        // While there is more to be read, keep reading.
-        c = bt_SND_5.read();
-        response += (char)c;
-      }
-      Serial.print("  Resp from bt_SND_5: ");
-      Serial.println(response);
-      response = "";  // No repeats
+  delay(50);  //Give the HT-05 a chance to respond
+  if (bt_SND_5.available()) {
+    delay(50);
+    while (bt_SND_5.available()) {
+      // While there is more to be read, keep reading.
+      c = bt_SND_5.read();
+      response += (char)c;
     }
+    Serial.print("  Resp from bt_SND_5: ");
+    Serial.println(response);
+    response = "";  // No repeats
   }
-  //==========================================================
-  void messgeToBt_SND_8() {
-    char c;
+}
+//==========================================================
+void messgeToBt_SND_8() {
+  char c;
 
-    bt_SND_8.listen();
-    bt_SND_8.print(command);
-    Serial.print("Sent to Number 8: ");
-    //Do not print the last character of the string which is \n
-    Serial.println(command.substring(0, command.length() - 1));
+  bt_SND_8.listen();
+  bt_SND_8.print(command);
+  Serial.print("Sent to Number 8: ");
+  //Do not print the last character of the string which is \n
+  Serial.println(command.substring(0, command.length() - 1));
 
-    delay(50);  //Give the HT-05 a chance to respond
-    if (bt_SND_8.available()) {
-      delay(50);
-      while (bt_SND_8.available()) {
-        // While there is more to be read, keep reading.
-        c = bt_SND_8.read();
-        response += (char)c;
-      }
-      Serial.print("  Resp from bt_SND_8: ");
-      Serial.println(response);
-      response = "";  // No repeats
+  delay(50);  //Give the HT-05 a chance to respond
+  if (bt_SND_8.available()) {
+    delay(50);
+    while (bt_SND_8.available()) {
+      // While there is more to be read, keep reading.
+      c = bt_SND_8.read();
+      response += (char)c;
     }
+    Serial.print("  Resp from bt_SND_8: ");
+    Serial.println(response);
+    response = "";  // No repeats
   }
-  //==========================================================
-  void testLEDs(int pixelCount) {
-    // For a set of NeoPixels the first NeoPixel is 0, second is 1, all the way up to the count of pixels minus one.
-    // pixels.Color takes GRB values, from 0,0,0 up to 255,255,255
-    //  Serial.print("pixelCount = ");
-    //  Serial.println(pixelCount);
+}
+//==========================================================
+void testLEDs(int pixelCount) {
+  // For a set of NeoPixels the first NeoPixel is 0, second is 1, all the way up to the count of pixels minus one.
+  // pixels.Color takes GRB values, from 0,0,0 up to 255,255,255
+  //  Serial.print("pixelCount = ");
+  //  Serial.println(pixelCount);
 
-    uint8_t G = 0;
-    uint8_t R = 0;
-    uint8_t B = 0;
+  uint8_t G = 0;
+  uint8_t R = 0;
+  uint8_t B = 0;
 
-    for (int x = 0; x < pixelCount; x++) {
-      G = 150;
-      R = 150;
-      B = 150;
-      backPixels.setPixelColor(x, frontPixels.Color(G, R, B));
-      backPixels.show();  // This sends the updated pixel color to the hardware.
-      frontPixels.setPixelColor(x, frontPixels.Color(G, R, B));
-      frontPixels.show();  // This sends the updated pixel color to the hardware.
+  for (int x = 0; x < pixelCount; x++) {
+    G = 150;
+    R = 150;
+    B = 150;
+    backPixels.setPixelColor(x, frontPixels.Color(G, R, B));
+    backPixels.show();  // This sends the updated pixel color to the hardware.
+    frontPixels.setPixelColor(x, frontPixels.Color(G, R, B));
+    frontPixels.show();  // This sends the updated pixel color to the hardware.
 
-      delay(60);  // Delay for a period of time (in milliseconds).
-      backPixels.clear();
-      frontPixels.clear();
-    }
+    delay(60);  // Delay for a period of time (in milliseconds).
     backPixels.clear();
-    backPixels.show();  //Turns off the last LED
     frontPixels.clear();
-    frontPixels.show();  //Turns off the last LED
   }
+  backPixels.clear();
+  backPixels.show();  //Turns off the last LED
+  frontPixels.clear();
+  frontPixels.show();  //Turns off the last LED
+}
 
-  //============================================
+//============================================
 
-  void readInputs() {
-    for (int x = 0; x <= inputsInUse; x++) {
-      //Invert the input reading value.
-      //Pin connected to ground = button pressed = logical 1 forinput[]
-      input[x].Read = !digitalRead(input[x].Pin);
-      /*
+void readInputs() {
+  for (int x = 0; x <= inputsInUse; x++) {
+    //Invert the input reading value.
+    //Pin connected to ground = button pressed = logical 1 forinput[]
+    input[x].Read = !digitalRead(input[x].Pin);
+    /*
             if(x==1)
             {
             Serial.print("Input[");
@@ -376,18 +370,18 @@ void loop() {
             Serial.println(input[x].Time);
             }
     */
-      if (input[x].Read == input[x].Prev)  // Input did not change state
-      {
-        if (input[x].Time < debounceTime) {
-          input[x].Time += timeDiff;
-        } else {
-          input[x].Accepted = input[x].Read;
-        }
-      } else  // Input changed state
-      {
-        input[x].Time = 0;
-        input[x].Prev = input[x].Read;
+    if (input[x].Read == input[x].Prev)  // Input did not change state
+    {
+      if (input[x].Time < debounceTime) {
+        input[x].Time += timeDiff;
+      } else {
+        input[x].Accepted = input[x].Read;
       }
-    }  //End of FOR
-  }
-  //============================================
+    } else  // Input changed state
+    {
+      input[x].Time = 0;
+      input[x].Prev = input[x].Read;
+    }
+  }  //End of FOR
+}
+//============================================
