@@ -81,6 +81,24 @@ const int charDetailFlag = 0; //Set to 1 for troubleshooting serial traffic
 
 int programNumber;    //The current program number being run on this stick
 
+const long five[] PROGMEM = {
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
+  0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
+  0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
+  0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,
+  0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,
+  0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
+  0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
+  0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,
+  0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,
+  0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
+  0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
+  0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0
+};
 //==============================================
 void setup()
 {
@@ -208,19 +226,31 @@ void runProgram(int progNum)
   {
     case 1:
       Serial.println("red steady 578 program");
+      for (int i = 0; i < NUMPIXELS; i++) 
+      {
+        if (pgm_read_dword(&(five[i]))) 
+        {
+          frontPixels.setPixelColor(i, frontPixels.Color(0, 255, 0));
+          backPixels.setPixelColor(i, backPixels.Color(0, 255, 0));
+        }
+      }
+      frontPixels.show();  // This sends the updated pixel color to the hardware.
+      backPixels.show();   // This sends the updated pixel color to the hardware.
       break;
 
     case 2:
-      Serial.println("red flashing 578 program");
-      break;
-
-    case 3:
       Serial.println("blue steady 578 program");
-      break;
-    
-    case 4:
-      Serial.println("blue 578 program");
-      break;
+            for (int i = 0; i < NUMPIXELS; i++) 
+      {
+        if (pgm_read_dword(&(five[i]))) 
+        {
+          frontPixels.setPixelColor(i, frontPixels.Color(0, 0, 255));
+          backPixels.setPixelColor(i, backPixels.Color(0, 0, 255));
+        }
+      }
+      frontPixels.show(); 
+      backPixels.show();  
+      break;    
   }
 
 }
