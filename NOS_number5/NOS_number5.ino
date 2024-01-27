@@ -81,7 +81,7 @@ const int charDetailFlag = 0; //Set to 1 for troubleshooting serial traffic
 
 int programNumber;    //The current program number being run on this stick
 
-const long five[] PROGMEM = {
+const byte five[] PROGMEM = {
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
   0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
@@ -99,6 +99,11 @@ const long five[] PROGMEM = {
   0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
   0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0
 };
+
+uint32_t red = frontPixels.Color(0,128, 0);
+uint32_t green = frontPixels.Color(128, 0,0);
+uint32_t blue = frontPixels.Color(0,0,128);
+
 //==============================================
 void setup()
 {
@@ -228,10 +233,10 @@ void runProgram(int progNum)
       Serial.println("red steady 578 program");
       for (int i = 0; i < NUMPIXELS; i++) 
       {
-        if (pgm_read_dword(&(five[i]))) 
+        if (pgm_read_byte(&(five[i]))) 
         {
-          frontPixels.setPixelColor(i, frontPixels.Color(0, 255, 0));
-          backPixels.setPixelColor(i, backPixels.Color(0, 255, 0));
+          frontPixels.setPixelColor(i, red);
+          backPixels.setPixelColor(i, red);
         }
       }
       frontPixels.show();  // This sends the updated pixel color to the hardware.
@@ -242,10 +247,10 @@ void runProgram(int progNum)
       Serial.println("blue steady 578 program");
             for (int i = 0; i < NUMPIXELS; i++) 
       {
-        if (pgm_read_dword(&(five[i]))) 
+        if (pgm_read_byte(&(five[i]))) 
         {
-          frontPixels.setPixelColor(i, frontPixels.Color(0, 0, 255));
-          backPixels.setPixelColor(i, backPixels.Color(0, 0, 255));
+          frontPixels.setPixelColor(i, blue);
+          backPixels.setPixelColor(i, blue);
         }
       }
       frontPixels.show(); 

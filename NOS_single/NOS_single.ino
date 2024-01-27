@@ -106,7 +106,7 @@ int prevProgSWstate;  //Used to determine when the switch changed state
 int programNumber;  //The current program number being run on this stick
 const int maxPrograms = 2;
 
-const byte seven[] PROGMEM = {
+const long go[] PROGMEM = {
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
   0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0,
@@ -242,31 +242,31 @@ void loop() {
     bt_SND_5.print(programNumber);  // Send text over bluetooth
     bt_SND_8.print(programNumber);  // Send text over bluetooth
 
-    if (programNumber == 1) 
+    if (programNumber == 2) 
     {  // RED steady 578 program
       frontPixels.clear();
       backPixels.clear();
       for (int i = 0; i < NUMPIXELS; i++) 
       {
-        if (pgm_read_byte(&(seven[i]))) 
+        if (pgm_read_dword(&(seven[i]))) 
         {
-          frontPixels.setPixelColor(i,0,128, 0);
-          backPixels.setPixelColor(i, 0, 128, 0);
+          frontPixels.setPixelColor(i,0,255, 0);
+          backPixels.setPixelColor(i, 0, 255, 0);
         }
       }
       frontPixels.show();  // This sends the updated pixel color to the hardware.
       backPixels.show();   // This sends the updated pixel color to the hardware.
     }
-    else if (programNumber == 2) 
+    else if (programNumber == 1) 
     { // BLUE steady 578 program
       frontPixels.clear();
       backPixels.clear();
       for (int i = 0; i < NUMPIXELS; i++) 
       {
-        if (pgm_read_byte(&(seven[i]))) 
+        if (pgm_read_dword(&(seven[i]))) 
         {
-          frontPixels.setPixelColor(i, 0, 0, 128);
-          backPixels.setPixelColor(i, 0, 0, 128);
+          frontPixels.setPixelColor(i, 0, 0, 255);
+          backPixels.setPixelColor(i, 0, 0, 255);
         }
       }
       frontPixels.show(); 
